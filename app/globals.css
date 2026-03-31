@@ -66,3 +66,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Be Vietnam Pro", sans-serif;
+
+  --color-primary: #845400;
+  --color-primary-container: #ffddb6;
+  --color-on-primary-container: #643f00;
+  
+  --color-secondary: #126c3e;
+  --color-secondary-container: #a1f5ba;
+  --color-on-secondary-container: #00522c;
+  
+  --color-tertiary: #91494a;
+  --color-tertiary-container: #ffdad9;
+  --color-on-tertiary-container: #743234;
+  
+  --color-surface: #fff8f1;
+  --color-on-surface: #201b0d;
+  --color-on-surface-variant: #50462a;
+  
+  --color-surface-container: #f9edd5;
+  --color-surface-container-low: #fef2db;
+  --color-surface-container-high: #f3e7d0;
+  --color-surface-container-highest: #ede1ca;
+  --color-surface-container-lowest: #ffffff;
+  
+  --color-outline-variant: #d5c5a1;
+
+  --radius-2xl: 1.5rem;
+}
+
+body {
+  @apply bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container;
+}

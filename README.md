@@ -1,109 +1,205 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# TeenUp LMS — Mini App
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+A mini Learning Management System built with **Next.js 15** + **Supabase** for managing Students, Parents, Classes, Registrations, and Subscriptions.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+---
 
-## Features
+## Progress
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Proxy
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+- [x] Database migration (5 tables + seed data)
+- [x] Parent API (`POST /api/parents`, `GET /api/parents/:id`)
+- [x] Student API (`POST /api/students`, `GET /api/students/:id`)
+- [x] Class API (`POST /api/classes`, `GET /api/classes?day=`)
+- [x] Registration API with business rules (`POST /api/classes/:id/register`, `DELETE /api/registrations/:id`)
+- [x] Subscription API (`POST /api/subscriptions`, `GET /api/subscriptions/:id`, `PATCH /api/subscriptions/:id/use`)
+- [x] Frontend: Dashboard
+- [x] Frontend: Create Parent form
+- [x] Frontend: Create Student form
+- [x] Frontend: Weekly class schedule + register modal
+- [x] Dockerfile + docker-compose.yml
+- [x] README
 
-## Demo
+---
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+## Quick Start
 
-## Deploy to Vercel
+### Prerequisites
+- Node.js 20+
+- A [Supabase](https://supabase.com) project (hosted)
+- [Supabase CLI](https://supabase.com/docs/guides/cli)
 
-Vercel deployment will guide you through creating a Supabase account and project.
+### 1. Install dependencies
+```bash
+npm install
+```
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### 2. Set up environment
+```bash
+cp .env.example .env.local
+# Fill in your values from Supabase dashboard → Project Settings → API
+# NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+### 3. Apply migrations to your hosted Supabase project
+```bash
+# Link to your Supabase project (get project-ref from the dashboard URL)
+npx supabase link --project-ref <project-ref>
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+# Push migrations + seed data
+npx supabase db push
+```
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### 4. Run the app
+```bash
+npm run dev
+# Open http://localhost:3000
+```
 
-## Clone and run locally
+> **Local dev with Docker (optional):** If you want to run Supabase locally instead,
+> install [Docker Desktop](https://docs.docker.com/desktop), then run `npx supabase start`
+> followed by `npx supabase db reset`.
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+---
 
-2. Create a Next.js app using the Supabase Starter template npx command
+## Docker Setup
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+### 1. Set environment variables
+```bash
+cp .env.example .env
+# Edit .env and fill in:
+# NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+### 2. Build and run with Docker Compose
+```bash
+docker-compose up --build
+# App runs at http://localhost:3000
+```
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+This starts the Next.js app. The `db` service in `docker-compose.yml` is a local Postgres included for completeness — the app connects to your hosted Supabase project via the env vars above.
 
-3. Use `cd` to change into the app's directory
+---
 
-   ```bash
-   cd with-supabase-app
-   ```
+## Database Schema
 
-4. Rename `.env.example` to `.env.local` and update the following:
+| Table | Key Columns |
+|---|---|
+| `parents` | `id`, `name`, `phone`, `email` |
+| `students` | `id`, `name`, `dob`, `gender`, `current_grade`, `parent_id → parents` |
+| `classes` | `id`, `name`, `subject`, `day_of_week`, `time_slot`, `teacher_name`, `max_students` |
+| `class_registrations` | `id`, `class_id → classes`, `student_id → students`, `registered_at` |
+| `subscriptions` | `id`, `student_id → students`, `package_name`, `start_date`, `end_date`, `total_sessions`, `used_sessions` |
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+---
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+## API Endpoints
 
-5. You can now run the Next.js local development server:
+### Parents
+```
+POST   /api/parents          Create a parent
+GET    /api/parents          List all parents
+GET    /api/parents/:id      Get parent by ID
+```
 
-   ```bash
-   npm run dev
-   ```
+### Students
+```
+POST   /api/students         Create a student
+GET    /api/students         List all students (includes parent)
+GET    /api/students/:id     Get student by ID (includes parent)
+```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+### Classes
+```
+POST   /api/classes          Create a class
+GET    /api/classes          List all classes
+GET    /api/classes?day=Mon  Filter by day_of_week
+```
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+### Class Registrations
+```
+POST   /api/classes/:id/register   Register student into class
+DELETE /api/registrations/:id      Cancel registration (refund if < 24h)
+```
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+**Registration checks:**
+1. Class must not be full (`enrolled < max_students`)
+2. Student must not have another class on the same `day_of_week` + `time_slot`
+3. Student must have an active subscription with remaining sessions (`end_date >= today`, `used_sessions < total_sessions`)
 
-## Feedback and issues
+**Cancellation logic:**
+- Cancelled within 24h of registration → 1 session refunded
+- Cancelled after 24h → no refund
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+### Subscriptions
+```
+POST   /api/subscriptions           Create subscription
+GET    /api/subscriptions/:id       Get subscription status
+PATCH  /api/subscriptions/:id/use   Use 1 session
+```
 
-## More Supabase examples
+---
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+## Example curl Requests
+
+```bash
+BASE=http://localhost:3000
+
+# Create parent
+curl -s -X POST $BASE/api/parents \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Le Van Cuong","phone":"0933444555","email":"cuong@example.com"}' | jq
+
+# Create student
+curl -s -X POST $BASE/api/students \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Le Thi Mai","dob":"2013-05-10","gender":"female","current_grade":"Grade 5","parent_id":"<parent_id>"}' | jq
+
+# List classes on Monday
+curl -s "$BASE/api/classes?day=Monday" | jq
+
+# Register student into class
+curl -s -X POST $BASE/api/classes/<class_id>/register \
+  -H "Content-Type: application/json" \
+  -d '{"student_id":"<student_id>"}' | jq
+
+# Cancel registration
+curl -s -X DELETE $BASE/api/registrations/<registration_id> | jq
+
+# Create subscription
+curl -s -X POST $BASE/api/subscriptions \
+  -H "Content-Type: application/json" \
+  -d '{"student_id":"<student_id>","package_name":"Basic 10","start_date":"2026-04-01","end_date":"2026-06-30","total_sessions":10}' | jq
+
+# Check subscription status
+curl -s $BASE/api/subscriptions/<sub_id> | jq
+```
+
+---
+
+## Seed Data
+
+The migration includes:
+
+**Parents (2)**
+| Name | Phone | Email |
+|---|---|---|
+| Nguyen Van An | 0901234567 | an.nguyen@example.com |
+| Tran Thi Binh | 0912345678 | binh.tran@example.com |
+
+**Students (3)**
+| Name | Grade | Parent |
+|---|---|---|
+| Nguyen Minh Khoa | Grade 6 | Nguyen Van An |
+| Nguyen Lan Anh | Grade 4 | Nguyen Van An |
+| Tran Duc Huy | Grade 7 | Tran Thi Binh |
+
+**Classes (3)**
+| Name | Subject | Day | Time | Teacher | Max |
+|---|---|---|---|---|---|
+| Toan Co Ban A1 | Math | Monday | 08:00-09:30 | Mr. Tuan | 5 |
+| Tieng Anh Giao Tiep B2 | English | Wednesday | 14:00-15:30 | Ms. Linh | 10 |
+| Vat Ly Nang Cao | Physics | Monday | 10:00-11:30 | Mr. Hung | 8 |
+
+**Subscriptions** — each student has an active subscription (Basic 10 / Standard 20 / Premium 30).

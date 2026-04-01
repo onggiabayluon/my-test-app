@@ -1,0 +1,178 @@
+{
+  "info": {
+    "name": "TeenUp LMS API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" },
+    { "key": "parent_id", "value": "a1000000-0000-0000-0000-000000000001" },
+    { "key": "student_id", "value": "b1000000-0000-0000-0000-000000000001" },
+    { "key": "class_id", "value": "c1000000-0000-0000-0000-000000000001" },
+    { "key": "subscription_id", "value": "d1000000-0000-0000-0000-000000000001" },
+    { "key": "registration_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Parents",
+      "item": [
+        {
+          "name": "Create Parent",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/parents",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Le Van Cuong\",\n  \"phone\": \"0933444555\",\n  \"email\": \"cuong@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Parents",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/parents"
+          }
+        },
+        {
+          "name": "Get Parent by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/parents/{{parent_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "Create Student",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/students",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Le Thi Mai\",\n  \"dob\": \"2013-05-10\",\n  \"gender\": \"female\",\n  \"current_grade\": \"Grade 5\",\n  \"parent_id\": \"{{parent_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Students",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/students"
+          }
+        },
+        {
+          "name": "Get Student by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/students/{{student_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classes",
+      "item": [
+        {
+          "name": "Create Class",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/classes",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Toan Nang Cao C1\",\n  \"subject\": \"Math\",\n  \"day_of_week\": \"Friday\",\n  \"time_slot\": \"08:00-09:30\",\n  \"teacher_name\": \"Mr. Nam\",\n  \"max_students\": 10\n}"
+            }
+          }
+        },
+        {
+          "name": "List All Classes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/classes"
+          }
+        },
+        {
+          "name": "List Classes by Day",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/classes?day=Monday",
+              "query": [{ "key": "day", "value": "Monday" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registrations",
+      "item": [
+        {
+          "name": "Register Student into Class",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.id) pm.collectionVariables.set('registration_id', res.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/classes/{{class_id}}/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": \"{{student_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Cancel Registration",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/registrations/{{registration_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/subscriptions",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": \"{{student_id}}\",\n  \"package_name\": \"Basic 10\",\n  \"start_date\": \"2026-04-01\",\n  \"end_date\": \"2026-06-30\",\n  \"total_sessions\": 10\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Subscription Status",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/subscriptions/{{subscription_id}}"
+          }
+        },
+        {
+          "name": "Use 1 Session",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/subscriptions/{{subscription_id}}/use"
+          }
+        }
+      ]
+    }
+  ]
+}

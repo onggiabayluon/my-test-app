@@ -25,40 +25,64 @@ A mini Learning Management System built with **Next.js 15** + **Supabase** for m
 
 ### Prerequisites
 - Node.js 20+
-- A [Supabase](https://supabase.com) project (hosted)
 - [Supabase CLI](https://supabase.com/docs/guides/cli)
+- Docker Desktop (for local Supabase) or a hosted [Supabase](https://supabase.com) project
 
 ### 1. Install dependencies
 ```bash
 npm install
 ```
 
-### 2. Set up environment
+---
+
+### Option A — Local Supabase (requires Docker Desktop)
+
 ```bash
-cp .env.example .env.local
-# Fill in your values from Supabase dashboard → Project Settings → API
-# NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+# Start local Supabase stack
+npx supabase start
 ```
 
-### 3. Apply migrations to your hosted Supabase project
-```bash
-# Link to your Supabase project (get project-ref from the dashboard URL)
-npx supabase link --project-ref <project-ref>
-
-# Push migrations + seed data
-npx supabase db push
+It will print local credentials:
+```
+API URL: http://localhost:54321
+anon key: eyJhbGc...
 ```
 
-### 4. Run the app
 ```bash
+# Apply migrations + seed data
+npx supabase db reset
+
+# Update .env.local with the local credentials
+NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<anon key from above>
+
+# Run the app
 npm run dev
 # Open http://localhost:3000
 ```
 
-> **Local dev with Docker (optional):** If you want to run Supabase locally instead,
-> install [Docker Desktop](https://docs.docker.com/desktop), then run `npx supabase start`
-> followed by `npx supabase db reset`.
+> Local Supabase is fully isolated — your cloud project is not affected.  
+> To stop: `npx supabase stop`
+
+---
+
+### Option B — Hosted Supabase (cloud)
+
+```bash
+# Link to your Supabase project (project-ref is in your dashboard URL)
+npx supabase link --project-ref <project-ref>
+
+# Push migrations + seed data to cloud
+npx supabase db push
+
+# Update .env.local with your cloud credentials (from dashboard → Project Settings → API)
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+
+# Run the app
+npm run dev
+# Open http://localhost:3000
+```
 
 ---
 

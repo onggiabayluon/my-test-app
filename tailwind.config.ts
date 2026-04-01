@@ -65,6 +65,7 @@ export default {
         "on-primary-container": "hsl(var(--on-primary-container))",
         "secondary-container": "hsl(var(--secondary-container))",
         "on-secondary-container": "hsl(var(--on-secondary-container))",
+        tertiary: "hsl(var(--tertiary))",
         "tertiary-container": "hsl(var(--tertiary-container))",
         "on-tertiary-container": "hsl(var(--on-tertiary-container))",
         "outline-variant": "hsl(var(--outline-variant))",
